@@ -1,0 +1,16 @@
+[
+  {
+    "name": "John Doe",
+    "age": 35,
+    "email": "johndoe@company.com",
+    "phone": "555-1234",
+    "department": "Sales"
+  },
+  {
+    "name": "Jane Smith",
+    "age": 28,
+    "email": "janesmith@company.com",
+    "phone": "555-5678",
+    "department": "Marketing"
+  }
+]
