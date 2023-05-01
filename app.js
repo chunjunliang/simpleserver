@@ -85,9 +85,9 @@ app.post("/employees", (req, res) => {
   // Retrieve employee data from request body
     const newLine = req.body;
 
-
-   // console.log('the transfered data is ');
-   // console.log(newLine);
+    let decodedNewLine = decodeURIComponent(newLine); 
+    console.log('the transfered data is ');
+    console.log(decodedNewLine);
    // //res.send('Data received');
 
    // // Read existing employee data from JSON file
@@ -124,7 +124,7 @@ app.post("/employees", (req, res) => {
     //const newLine = 'This is a new line of text.';
 
     // Append the new line of text to the file
-    fs.appendFile('employee.txt', newLine + '\n',(err) => {
+    fs.appendFile('employee.txt', decodedNewLine + '\n',(err) => {
         if(err) {
             console.error(err);
             return;
