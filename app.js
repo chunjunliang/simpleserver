@@ -7,29 +7,6 @@ const PORT = process.env.PORT || 3000;
 
 
 app.use(bodyParser.text())
-//const cors = require('cors');
-
-// Allow all origins
-//app.use(cors());
-
-//// Allow specific origins
-//app.use(cors({
-//    origin: 'http://localhost:3000/employees'
-//}));
-
-// Allow multiple origins
-//app.use(cors({
-//    origin: ['http://example.com', 'http://localhost:3000/employees']
-//}));
-
-//app.use(express.static("public"));
-//app.use(express.json());
-//app.use(express.urlencoded({ extended: true }));
-//app.use(bodyParser.urlencoded({ extended: true }));
-//app.use(function (req, res, next) {
-//    res.setHeader('Content-Type', 'application/json') //example: set header
-//    next();
-//});
 
 app.get("/", (req, res) => {
     res.send('Hello node');
@@ -39,7 +16,7 @@ app.get("/", (req, res) => {
 }
 )
 
-app.get("/employees", (req, res) => {
+app.get("/info", (req, res) => {
     //res.write('Hello employee');
     fs.readFile('employee.txt', 'utf8', function (err, data) {
         if (err) {
@@ -53,13 +30,12 @@ app.get("/employees", (req, res) => {
             res.end();
         }
     });
-
-    
+  
 
 }
 )
 
-app.get("/employees/deleteall", (req, res) => {
+app.get("/info/deleteall", (req, res) => {
 
     // Create an empty object to overwrite the contents of the file
     let emptyObject = "";
@@ -79,7 +55,7 @@ app.get("/employees/deleteall", (req, res) => {
 }
 )
 
-app.post("/employees", (req, res) => {
+app.post("/info", (req, res) => {
 
     //console.log(`receiving data}`);
   // Retrieve employee data from request body
@@ -88,42 +64,7 @@ app.post("/employees", (req, res) => {
     let decodedNewLine = decodeURIComponent(newLine); 
     console.log('the transfered data is ');
     console.log(decodedNewLine);
-   // //res.send('Data received');
-
-   // // Read existing employee data from JSON file
-   //// let data = JSON.parse(fs.readFileSync("employee.txt"));
-
-   // fs.readFile('employee.txt', 'utf8', function (err, data) {
-   //     if (err) {
-   //         console.error(err);
-   //     } else {
-
-   //         console.log('the loaded data is ');
-   //         console.log(data);
-   //     }
-   // });
-    
-    //console.log(data);
-
-    // Add the new object to the array
-    //data.records.push(newEmployee);
-
-
-  // Add new employee to employee data array
-  //data.push(newEmployee);
-
-  // Write updated data back to JSON file
-  //fs.writeFileSync("employee.json", JSON.stringify(data));
-
-  //// Send successful response
-  //  //res.status(201).send("New employee added");
-  //  res.status(201).send(data);
-
-  //  console.log('the final data is ');
-  //  console.log(data);
-    //const newLine = 'This is a new line of text.';
-
-    // Append the new line of text to the file
+  
     fs.appendFile('employee.txt', decodedNewLine + '\n',(err) => {
         if(err) {
             console.error(err);
