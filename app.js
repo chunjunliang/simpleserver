@@ -41,15 +41,15 @@ db.query('SELECT NOW()', (err, res) => {
     db.end();
 });
 
-db.query('CREATE TABLE employees (name TEXT, age INTEGER, email TEXT, phone TEXT)',(err, res) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        console.log('employees table created successfully');
-    }
-);
-// create a new employee record
+////db.query('CREATE TABLE employees (name TEXT, age INTEGER, email TEXT, phone TEXT)',(err, res) => {
+////        if (err) {
+////            console.error(err);
+////            return;
+////        }
+////        console.log('employees table created successfully');
+////    }
+////);
+ //create a new employee record
 const newEmployee = {
     name: "John Doe",
     age: 30,
@@ -58,13 +58,7 @@ const newEmployee = {
 };
 
 // insert the new employee record into the database
-db.query("INSERT INTO employees(name, age, email, phone) VALUES($1, $2, $3, $4)", [newEmployee.name, newEmployee.age, newEmployee.email, newEmployee.phone], (err, res) => {
-    if (err) {
-        console.error(err);
-        return;
-    }
-    console.log("New employee added to the database");
-});
+
 
 // retrieve employee records from the database
 db.query("SELECT * FROM employees", (err, res) => {
@@ -76,7 +70,7 @@ db.query("SELECT * FROM employees", (err, res) => {
 });
 
 
-console.log("test DB action stop here");
+//console.log("test DB action stop here");
 
 
 app.use(bodyParser.text())
@@ -92,7 +86,19 @@ app.get("/", (req, res) => {
 }
 )
 
-app.get("/info", (req, res) => {
+app.get("/info", (req, response) => {
+
+
+    db.query("SELECT * FROM employees", (err, res) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log(res.rows);
+        response.send(res.rows)
+    });
+
+
     //res.write('Hello employee');
     fs.readFile('employee.txt', 'utf8', function (err, data) {
         if (err) {
@@ -102,8 +108,8 @@ app.get("/info", (req, res) => {
             console.log('the loaded data is ');
             console.log(data);
             //res.contentType = 'text/html';
-            res.send('<pre>' + data + '</pre>');
-            res.end();
+            response.send('<pre>' + data + '</pre>');
+            response.end();
         }
     });
   
@@ -140,6 +146,14 @@ app.post("/info", (req, res) => {
     let decodedNewLine = decodeURIComponent(newLine); 
     console.log('the transfered data is ');
     console.log(decodedNewLine);
+
+    db.query("INSERT INTO employees(name, age, email, phone) VALUES($1, $2, $3, $4)", [newEmployee.name, newEmployee.age, newEmployee.email, newEmployee.phone], (err, res) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log("New employee added to the database");
+    });
   
     fs.appendFile('employee.txt', decodedNewLine + '\n',(err) => {
         if(err) {
