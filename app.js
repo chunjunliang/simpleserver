@@ -95,7 +95,7 @@ app.get("/info", (req, response) => {
             return;
         }
         console.log(res.rows);
-        response.send('data is loaded from the database')
+        //response.send('data is loaded from the database')
     });
 
 
