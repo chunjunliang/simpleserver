@@ -40,6 +40,15 @@ db.query('SELECT NOW()', (err, res) => {
     }
     db.end();
 });
+
+db.query('CREATE TABLE employees (name TEXT, age INTEGER, email TEXT, phone TEXT)',(err, res) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log('employees table created successfully');
+    }
+);
 // create a new employee record
 const newEmployee = {
     name: "John Doe",
@@ -57,8 +66,17 @@ db.query("INSERT INTO employees(name, age, email, phone) VALUES($1, $2, $3, $4)"
     console.log("New employee added to the database");
 });
 
+// retrieve employee records from the database
+db.query("SELECT * FROM employees", (err, res) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    console.log(res.rows);
+});
 
-console.log("DB action stop here");
+
+console.log("test DB action stop here");
 
 
 app.use(bodyParser.text())
