@@ -5,8 +5,30 @@ const bodyParser = require('body-parser');
 const { env } = require("process");
 const PORT = process.env.PORT || 3000;
 
+const { Pool } = require('pg');
+
+const pool = new Pool({
+    user: 'badmintonbattledev_user',
+    host: 'postgres://badmintonbattledev_user:0NXUyac9pz4BrAOVn36pnZgR4ChJYh85@dpg-ch8r7jtgk4qeoo787770-a/badmintonbattledev',
+    database: 'badmintonbattledev_user',
+    password: '0NXUyac9pz4BrAOVn36pnZgR4ChJYh85',
+    port: 5432, // or your specific port number
+});
+
+pool.query('SELECT NOW()', (err, res) => {
+    if (err) {
+        console.log('Error connecting to the database:', err);
+    } else {
+        console.log('Successfully connected to the database:', res.rows[0]);
+    }
+    pool.end();
+});
+
 
 app.use(bodyParser.text())
+
+
+
 
 app.get("/", (req, res) => {
     res.send('Hello node');
