@@ -38,7 +38,7 @@ db.query('SELECT NOW()', (err, res) => {
     } else {
         console.log('Successfully connected to the database:', res.rows[0]);
     }
-    db.end();
+    //db.end();
 });
 
 ////db.query('CREATE TABLE employees (name TEXT, age INTEGER, email TEXT, phone TEXT)',(err, res) => {
@@ -61,13 +61,13 @@ const newEmployee = {
 
 
 // retrieve employee records from the database
-db.query("SELECT * FROM employees", (err, res) => {
-    if (err) {
-        console.error(err);
-        return;
-    }
-    console.log(res.rows);
-});
+//db.query("SELECT * FROM employees", (err, res) => {
+//    if (err) {
+//        console.error(err);
+//        return;
+//    }
+//    console.log(res.rows);
+//});
 
 
 //console.log("test DB action stop here");
