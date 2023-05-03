@@ -7,22 +7,48 @@ const PORT = process.env.PORT || 3000;
 
 const { Pool } = require('pg');
 
-const pool = new Pool({
+//const pool = new Pool({
+//    user: 'badmintonbattledev_user',
+//    host: 'dpg-ch8r7jtgk4qeoo787770-a',
+//    database: 'badmintonbattledev',
+//    password: '0NXUyac9pz4BrAOVn36pnZgR4ChJYh85',
+//    port: 5432, // or your specific port number
+//});
+
+//pool.query('SELECT NOW()', (err, res) => {
+//    if (err) {
+//        console.log('Error connecting to the database:', err);
+//    } else {
+//        console.log('Successfully connected to the database:', res.rows[0]);
+//    }
+//    pool.end();
+//});
+
+const db = new Pool({
     user: 'badmintonbattledev_user',
     host: 'dpg-ch8r7jtgk4qeoo787770-a',
     database: 'badmintonbattledev',
     password: '0NXUyac9pz4BrAOVn36pnZgR4ChJYh85',
     port: 5432, // or your specific port number
 });
+// create a new employee record
+const newEmployee = {
+    name: "John Doe",
+    age: 30,
+    email: "john.doe@example.com",
+    phone: "555-1234"
+};
 
-pool.query('SELECT NOW()', (err, res) => {
+// insert the new employee record into the database
+db.query("INSERT INTO employees(name, age, email, phone) VALUES($1, $2, $3, $4)", [newEmployee.name, newEmployee.age, newEmployee.email, newEmployee.phone], (err, res) => {
     if (err) {
-        console.log('Error connecting to the database:', err);
-    } else {
-        console.log('Successfully connected to the database:', res.rows[0]);
+        console.error(err);
+        return;
     }
-    pool.end();
+    console.log("New employee added to the database");
 });
+
+
 
 
 app.use(bodyParser.text())
