@@ -31,6 +31,15 @@ const db = new Pool({
     password: '0NXUyac9pz4BrAOVn36pnZgR4ChJYh85',
     port: 5432, // or your specific port number
 });
+
+db.query('SELECT NOW()', (err, res) => {
+    if (err) {
+        console.log('Error connecting to the database:', err);
+    } else {
+        console.log('Successfully connected to the database:', res.rows[0]);
+    }
+    db.end();
+});
 // create a new employee record
 const newEmployee = {
     name: "John Doe",
@@ -49,6 +58,7 @@ db.query("INSERT INTO employees(name, age, email, phone) VALUES($1, $2, $3, $4)"
 });
 
 
+console.log("DB action stop here");
 
 
 app.use(bodyParser.text())
