@@ -10,7 +10,7 @@ const { Pool } = require('pg');
 const pool = new Pool({
     user: 'badmintonbattledev_user',
     host: 'dpg-ch8r7jtgk4qeoo787770-a',
-    database: 'badmintonbattledev_user',
+    database: 'badmintonbattledev',
     password: '0NXUyac9pz4BrAOVn36pnZgR4ChJYh85',
     port: 5432, // or your specific port number
 });
