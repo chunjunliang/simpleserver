@@ -57,6 +57,8 @@ const newEmployee = {
     phone: "555-1234"
 };
 
+const employeeData;
+
 // insert the new employee record into the database
 
 
@@ -95,9 +97,9 @@ app.get("/info", (req, response) => {
             return;
         }
         console.log(res.rows);
-        const employeeData = JSON.stringify(res.rows);
+        employeeData = JSON.stringify(res.rows);
 
-        response.send(employeeData);
+        
         //response.send('data is loaded from the database')
     });
 
@@ -111,8 +113,8 @@ app.get("/info", (req, response) => {
             console.log('the loaded data is ');
             console.log(data);
             //res.contentType = 'text/html';
-            response.send('<pre>' + data + '</pre>');
-
+            //response.send('<pre>' + data + '</pre>');
+            response.send(data + employeeData);
             response.end();
         }
     });
