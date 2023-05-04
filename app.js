@@ -54,37 +54,47 @@ app.get("/", (req, res) => {
 app.get("/info", (req, response) => {
 
 
-    db.query("SELECT * FROM userinfo", (err, res) => {
+    db.query("SELECT * FROM UserInfo ORDER BY id DESC LIMIT 3", (err, result) => {
         if (err) {
             console.error(err);
             return;
         }
-        console.log(res.rows);
-        userData = JSON.stringify(res.rows);
-        response.send(userData);
+        console.log(result.rows);
+        response.json(result.rows);
+        //userData = JSON.stringify(res.rows);
+        //response.send(userData);
         response.end();
         
         //response.send('data is loaded from the database')
     });
-
-
-    //res.write('Hello employee');
-    //fs.readFile('employee.txt', 'utf8', function (err, data) {
-    //    if (err) {
-    //        console.error(err);
-    //    } else {
-
-    //        console.log('the loaded data is ');
-    //        console.log(data);
-    //        //res.contentType = 'text/html';
-    //        //response.send('<pre>' + data + '</pre>');
-            
-    //    }
-    //});
-  
+     
 
 }
 )
+
+//app.get('/info', (req, res) => {
+//    // Create a new PostgreSQL pool
+//    const pool = new Pool(dbConfig);
+
+//    // Execute the SELECT query to get the last three rows from the "UserInfo" table
+//    const query = 'SELECT * FROM UserInfo ORDER BY id DESC LIMIT 3';
+//    pool.query(query)
+//        .then((result) => {
+//            // If the query is successful, send the result as a JSON response
+//            res.json(result.rows);
+//        })
+//        .catch((err) => {
+//            // If there's an error, send a 500 error response
+//            console.error(err);
+//            res.status(500).send('Internal Server Error');
+//        })
+//        .finally(() => {
+//            // Release the client back to the pool when the request is finished
+//            pool.end();
+//        });
+//});
+
+
 
 app.get("/info/deleteall", (req, res) => {
 
