@@ -81,8 +81,8 @@ app.get("/info/:id", (req, res) => {
 
 
 
-app.get("/info/deleteall", (req, res) => {
-    db.query("delete FROM UserInfo", (err, result) => {
+app.get("/deleteall", (req, res) => {
+    db.query("DELETE FROM userinfo", (err, result) => {
         if (err) {
             console.error(err);
             return;
