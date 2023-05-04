@@ -97,7 +97,7 @@ app.get("/info", (req, response) => {
         console.log(res.rows);
         const employeeData = JSON.stringify(res.rows);
 
-        response.send(employeedata);
+        response.send(employeeData);
         //response.send('data is loaded from the database')
     });
 
