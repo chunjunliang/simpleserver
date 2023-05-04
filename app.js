@@ -57,7 +57,7 @@ const newEmployee = {
     phone: "555-1234"
 };
 
-const employeeData;
+let employeeData="hello database";
 
 // insert the new employee record into the database
 
