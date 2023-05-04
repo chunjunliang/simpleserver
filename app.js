@@ -95,6 +95,9 @@ app.get("/info", (req, response) => {
             return;
         }
         console.log(res.rows);
+        const employeeData = JSON.stringify(res.rows);
+
+        esponse.send(employeedata);
         //response.send('data is loaded from the database')
     });
 
@@ -109,6 +112,7 @@ app.get("/info", (req, response) => {
             console.log(data);
             //res.contentType = 'text/html';
             response.send('<pre>' + data + '</pre>');
+
             response.end();
         }
     });
