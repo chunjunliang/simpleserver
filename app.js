@@ -7,15 +7,16 @@ const PORT = process.env.PORT || 3000;
 
 const { Pool } = require('pg');
 
-
-
-const db = new Pool({
+const dbConfig = {
     user: 'badmintonbattledev_user',
     host: 'dpg-ch8r7jtgk4qeoo787770-a',
     database: 'badmintonbattledev',
     password: '0NXUyac9pz4BrAOVn36pnZgR4ChJYh85',
     port: 5432, // or your specific port number
-});
+};
+
+const db = new Pool(dbConfig);
+
 
 db.query('SELECT NOW()', (err, res) => {
     if (err) {
@@ -25,17 +26,6 @@ db.query('SELECT NOW()', (err, res) => {
     }
     //db.end();
 });
-
-
-const newEmployee = {
-    name: "John Doe",
-    age: 30,
-    email: "john.doe@example.com",
-    phone: "555-1234"
-};
-
-let userData="hello database";
-
 
 
 app.use(bodyParser.text())
@@ -51,69 +41,57 @@ app.get("/", (req, res) => {
 }
 )
 
-app.get("/info", (req, response) => {
+app.get("/info/:id", (req, res) => {
+
+    //const id = req.params.id; // Get the id parameter from the route
+
+    //db.query("SELECT * FROM UserInfo ORDER BY id LIMIT 10 offset ", (err, result) => {
+    //    if (err) {
+    //        console.error(err);
+    //        return;
+    //    }
+    //    console.log(result.rows);
+    //    response.json(result.rows);
+    //    //userData = JSON.stringify(res.rows);
+    //    //response.send(userData);
+    //    response.end();
+
+    //});
+
+    const { id } = req.params;
+
+    // Calculate the offset based on the id parameter
+    const offset = id * 10;
+
+    const query = `
+    SELECT * FROM UserInfo
+    ORDER BY id
+    OFFSET $1
+    LIMIT 10
+  `;
+
+    db.query(query, [offset])
+        .then(result => res.json(result.rows))
+        .catch(error => {
+            console.error(error);
+            res.status(500).send('Internal server error');
+    });
+})
 
 
-    db.query("SELECT * FROM UserInfo ORDER BY id DESC LIMIT 3", (err, result) => {
+
+
+app.get("/info/deleteall", (req, res) => {
+    db.query("delete FROM UserInfo", (err, result) => {
         if (err) {
             console.error(err);
             return;
         }
         console.log(result.rows);
-        response.json(result.rows);
-        //userData = JSON.stringify(res.rows);
-        //response.send(userData);
-        response.end();
-        
-        //response.send('data is loaded from the database')
-    });
-     
-
-}
-)
-
-//app.get('/info', (req, res) => {
-//    // Create a new PostgreSQL pool
-//    const pool = new Pool(dbConfig);
-
-//    // Execute the SELECT query to get the last three rows from the "UserInfo" table
-//    const query = 'SELECT * FROM UserInfo ORDER BY id DESC LIMIT 3';
-//    pool.query(query)
-//        .then((result) => {
-//            // If the query is successful, send the result as a JSON response
-//            res.json(result.rows);
-//        })
-//        .catch((err) => {
-//            // If there's an error, send a 500 error response
-//            console.error(err);
-//            res.status(500).send('Internal Server Error');
-//        })
-//        .finally(() => {
-//            // Release the client back to the pool when the request is finished
-//            pool.end();
-//        });
-//});
-
-
-
-app.get("/info/deleteall", (req, res) => {
-
-    // Create an empty object to overwrite the contents of the file
-    let emptyObject = "";
-
-    // Convert the object to a JSON string
-    //let emptyJsonData = JSON.stringify(emptyObject);
-
-    // Write the empty JSON string to the file
-    fs.writeFile('employee.txt', emptyObject, err => {
-        if (err) throw err;
-        console.log('All records deleted successfully!');
-        res.send('All records deleted successfully!');
-        res.end();
-    });
-    
-
-}
+        res.send("All records is deleted!");
+        res.end;
+        }
+    )}
 )
 
 app.post("/info", (req, res) => {
@@ -159,3 +137,8 @@ app.post("/info", (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Release the pool when the application exits
+process.on('exit', () => {
+    db.end();
+});
