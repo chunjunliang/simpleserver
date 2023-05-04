@@ -153,7 +153,9 @@ app.post("/info", (req, res) => {
     console.log('the transfered data is ');
     console.log(decodedNewLine);
 
-    db.query("INSERT INTO employees(name, age, email, phone) VALUES($1, $2, $3, $4)", [newEmployee.name, newEmployee.age, newEmployee.email, newEmployee.phone], (err, res) => {
+    //        "INSERT INTO userinfo(name, age, email, phone) VALUES($1, $2, $3, $4)"
+
+    db.query("INSERT INTO UserInfo (username, country,deviceID,ipaddress,timenow,stage,ping) VALUES($1, $2, $3, $4, $5, $6, $7)", ["lcj", "china", "quest2000", "1.2.3.4","2023/5/4","singleplayer","ping"], (err, res) => {
         if (err) {
             console.error(err);
             return;
