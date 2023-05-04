@@ -7,22 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 const { Pool } = require('pg');
 
-//const pool = new Pool({
-//    user: 'badmintonbattledev_user',
-//    host: 'dpg-ch8r7jtgk4qeoo787770-a',
-//    database: 'badmintonbattledev',
-//    password: '0NXUyac9pz4BrAOVn36pnZgR4ChJYh85',
-//    port: 5432, // or your specific port number
-//});
 
-//pool.query('SELECT NOW()', (err, res) => {
-//    if (err) {
-//        console.log('Error connecting to the database:', err);
-//    } else {
-//        console.log('Successfully connected to the database:', res.rows[0]);
-//    }
-//    pool.end();
-//});
 
 const db = new Pool({
     user: 'badmintonbattledev_user',
@@ -41,15 +26,7 @@ db.query('SELECT NOW()', (err, res) => {
     //db.end();
 });
 
-////db.query('CREATE TABLE employees (name TEXT, age INTEGER, email TEXT, phone TEXT)',(err, res) => {
-////        if (err) {
-////            console.error(err);
-////            return;
-////        }
-////        console.log('employees table created successfully');
-////    }
-////);
- //create a new employee record
+
 const newEmployee = {
     name: "John Doe",
     age: 30,
@@ -57,22 +34,8 @@ const newEmployee = {
     phone: "555-1234"
 };
 
-let employeeData="hello database";
+let userData="hello database";
 
-// insert the new employee record into the database
-
-
-// retrieve employee records from the database
-//db.query("SELECT * FROM employees", (err, res) => {
-//    if (err) {
-//        console.error(err);
-//        return;
-//    }
-//    console.log(res.rows);
-//});
-
-
-//console.log("test DB action stop here");
 
 
 app.use(bodyParser.text())
@@ -97,8 +60,8 @@ app.get("/info", (req, response) => {
             return;
         }
         console.log(res.rows);
-        employeeData = JSON.stringify(res.rows);
-        response.send(employeeData);
+        userData = JSON.stringify(res.rows);
+        response.send(userData);
         response.end();
         
         //response.send('data is loaded from the database')
@@ -106,18 +69,18 @@ app.get("/info", (req, response) => {
 
 
     //res.write('Hello employee');
-    fs.readFile('employee.txt', 'utf8', function (err, data) {
-        if (err) {
-            console.error(err);
-        } else {
+    //fs.readFile('employee.txt', 'utf8', function (err, data) {
+    //    if (err) {
+    //        console.error(err);
+    //    } else {
 
-            console.log('the loaded data is ');
-            console.log(data);
-            //res.contentType = 'text/html';
-            //response.send('<pre>' + data + '</pre>');
+    //        console.log('the loaded data is ');
+    //        console.log(data);
+    //        //res.contentType = 'text/html';
+    //        //response.send('<pre>' + data + '</pre>');
             
-        }
-    });
+    //    }
+    //});
   
 
 }
@@ -152,10 +115,20 @@ app.post("/info", (req, res) => {
     let decodedNewLine = decodeURIComponent(newLine); 
     console.log('the transfered data is ');
     console.log(decodedNewLine);
+    const inputArray = decodedNewLine.split(',');
+    const userObject = {
+        deviceID: inputArray[0],
+        username: inputArray[1],
+        country: inputArray[2],
+        ipaddress: inputArray[3],        
+        timenow: inputArray[4],
+        stage: inputArray[5],
+        ping: inputArray[6]        
+    };
 
     //        "INSERT INTO userinfo(name, age, email, phone) VALUES($1, $2, $3, $4)"
 
-    db.query("INSERT INTO UserInfo (username, country,deviceID,ipaddress,timenow,stage,ping) VALUES($1, $2, $3, $4, $5, $6, $7)", ["lcj", "china", "quest2000", "1.2.3.4","2023/5/4","singleplayer","ping"], (err, res) => {
+    db.query("INSERT INTO UserInfo (deviceID,username, country,ipaddress,timenow,stage,ping) VALUES($1, $2, $3, $4, $5, $6, $7)", [userObject.deviceID, userObject.username, userObject.country, userObject.ipaddress, userObject.timenow, userObject.stage, userObject.ping], (err, res) => {
         if (err) {
             console.error(err);
             return;
@@ -163,14 +136,15 @@ app.post("/info", (req, res) => {
         console.log("New employee added to the database");
     });
   
-    fs.appendFile('employee.txt', decodedNewLine + '\n',(err) => {
-        if(err) {
-            console.error(err);
-            return;
-        }
-        console.log('New line added to file.');
-    });
-    //console.log('New line added to file.');
+    //fs.appendFile('employee.txt', decodedNewLine + '\n',(err) => {
+    //    if(err) {
+    //        console.error(err);
+    //        return;
+    //    }
+    //    console.log('New line added to file.');
+    //});
+    ////console.log('New line added to file.');
+    res.send("New employee added to the database");
     res.end();
 });
 
