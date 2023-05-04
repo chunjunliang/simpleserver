@@ -91,7 +91,7 @@ app.get("/", (req, res) => {
 app.get("/info", (req, response) => {
 
 
-    db.query("SELECT * FROM employees", (err, res) => {
+    db.query("SELECT * FROM userinfo", (err, res) => {
         if (err) {
             console.error(err);
             return;
