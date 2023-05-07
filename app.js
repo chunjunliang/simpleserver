@@ -94,6 +94,48 @@ app.get("/deleteall", (req, res) => {
     )}
 )
 
+
+app.get("/inputdata", (req, res) => {
+    // read the CSV data from file
+    const csvData = fs.readFileSync('/FullDB.csv', 'utf8');
+
+    // remove any empty lines from the CSV data
+    const cleanedCsvData = csvData.replace(/^\s*[\r\n]/gm, "");
+
+    // split the CSV data into rows
+    const rows = cleanedCsvData.split('\n');
+
+    // iterate over the rows and insert each row into the IP2Country table
+    for (let i = 0; i < rows.length; i++) {
+        const cols = rows[i].split(',');
+
+        const ipStart = parseInt(cols[0]);
+        const ipEnd = parseInt(cols[1]);
+        const countryCode = cols[2];
+        const countryName = cols[3];
+
+        const query = {
+            text: 'INSERT INTO IP2Country(ip_start, ip_end, country_code, country_name) VALUES($1, $2, $3, $4)',
+            values: [ipStart, ipEnd, countryCode, countryName],
+        };
+
+        pool.query(query, (err, res) => {
+            if (err) {
+                console.error(err.stack);
+            } else {
+                console.log(`Inserted row ${i + 1} into IP2Country table`);
+            }
+        });
+    }
+
+
+
+
+
+   
+})
+
+
 app.post("/info", (req, res) => {
 
     //console.log(`receiving data}`);
