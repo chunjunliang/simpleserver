@@ -97,7 +97,7 @@ app.get("/deleteall", (req, res) => {
 
 app.get("/inputdata", (req, res) => {
     // read the CSV data from file
-    const csvData = fs.readFileSync('/FullDB.csv', 'utf8');
+    const csvData = fs.readFileSync('FullDB.csv', 'utf8');
 
     // remove any empty lines from the CSV data
     const cleanedCsvData = csvData.replace(/^\s*[\r\n]/gm, "");
