@@ -119,7 +119,7 @@ app.get("/inputdata", (req, res) => {
             values: [ipStart, ipEnd, countryCode, countryName],
         };
 
-        pool.query(query, (err, res) => {
+        db.query(query, (err, res) => {
             if (err) {
                 console.error(err.stack);
             } else {
