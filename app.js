@@ -61,13 +61,13 @@ app.get("/info/:id", (req, res) => {
     const { id } = req.params;
 
     // Calculate the offset based on the id parameter
-    const offset = id * 10;
+    const offset = id * 20;
 
     const query = `
     SELECT * FROM UserInfo
     ORDER BY id
     OFFSET $1
-    LIMIT 10
+    LIMIT 20
   `;
 
     db.query(query, [offset])
