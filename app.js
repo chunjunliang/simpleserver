@@ -100,10 +100,10 @@ app.get("/inputdata", (req, res) => {
     const csvData = fs.readFileSync('fulldb.csv', 'utf8');
 
     // remove any empty lines from the CSV data
-    const cleanedCsvData = csvData.replace(/^\s*[\r\n]/gm, "");
+    //const cleanedCsvData = csvData.replace(/^\s*[\r\n]/gm, "");
 
     // split the CSV data into rows
-    const rows = cleanedCsvData.split('\n');
+    const rows = csvData.split('\n');
 
     // iterate over the rows and insert each row into the IP2Country table
     for (let i = 0; i < rows.length; i++) {
@@ -129,7 +129,8 @@ app.get("/inputdata", (req, res) => {
     }
 
 
-
+    res.send("All IP2Country Data is input into the database!");
+    res.end;
 
 
    
