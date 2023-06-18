@@ -137,7 +137,7 @@ app.get("/inputdata", (req, res) => {
 })
 
 
-//app.post("/info", (req, res) => {
+app.post("/info", (req, res) => {
 
     //console.log(`receiving data}`);
   // Retrieve employee data from request body
