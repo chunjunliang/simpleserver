@@ -33,13 +33,13 @@ app.use(bodyParser.text())
 
 
 
-app.get("/", (req, res) => {
-    res.send('Hello node');
+//app.get("/", (req, res) => {
+//    res.send('Hello node');
     
-    res.end();
+//    res.end();
 
-}
-)
+//}
+//)
 
 app.get("/info/:id", (req, res) => {
 
