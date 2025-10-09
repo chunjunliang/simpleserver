@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON文件上传 - SimpleServer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .upload-section {
+            margin-bottom: 40px;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+        }
+
+        .upload-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .download-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .download-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .file-list {
+            list-style: none;
+        }
+
+        .file-item {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .file-details {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .download-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #218838;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .file-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📁 JSON文件管理</h1>
+        
+        <div class="upload-section">
+            <h2>上传JSON文件</h2>
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label for="fileInput">选择JSON文件：</label>
+                    <input type="file" id="fileInput" accept=".json" required>
+                </div>
+                
+                <button type="submit" class="btn" id="uploadBtn">上传文件</button>
+            </form>
+            
+            <div id="status" class="status" style="display: none;"></div>
+        </div>
+
+        <div class="download-section">
+            <h2>📥 可下载文件</h2>
+            <div id="loading" class="loading" style="display: none;">正在加载文件列表...</div>
+            <ul class="file-list" id="fileList">
+                <!-- 文件列表将动态加载 -->
+            </ul>
+            <div id="emptyState" class="empty-state" style="display: none;">
+                暂无上传的文件
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html">← 返回首页</a>
+        </div>
+    </div>
+
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const status = document.getElementById('status');
+        const fileList = document.getElementById('fileList');
+        const loading = document.getElementById('loading');
+        const emptyState = document.getElementById('emptyState');
+
+        // 获取服务器地址
+        const serverUrl = window.location.origin;
+
+        // 文件上传处理
+        uploadForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const file = fileInput.files[0];
+            if (!file) {
+                showStatus('请选择一个文件', 'error');
+                return;
+            }
+
+            // 验证文件类型
+            if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
+                showStatus('请选择JSON文件', 'error');
+                return;
+            }
+
+            // 验证JSON格式
+            try {
+                const text = await file.text();
+                JSON.parse(text);
+            } catch (error) {
+                showStatus('文件格式错误，请确保是有效的JSON文件', 'error');
+                return;
+            }
+
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '上传中...';
+
+            try {
+                const formData = new FormData();
+                formData.append('jsonFile', file);
+
+                const response = await fetch(`${serverUrl}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showStatus(`文件上传成功！文件名：${result.filename}`, 'success');
+                    fileInput.value = '';
+                    loadFileList(); // 重新加载文件列表
+                } else {
+                    showStatus(`上传失败：${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('上传失败：网络错误', 'error');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = '上传文件';
+            }
+        });
+
+        // 加载文件列表
+        async function loadFileList() {
+            loading.style.display = 'block';
+            fileList.innerHTML = '';
+            emptyState.style.display = 'none';
+
+            try {
+                const response = await fetch(`${serverUrl}/files`);
+                const files = await response.json();
+
+                loading.style.display = 'none';
+
+                if (files.length === 0) {
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                files.forEach(file => {
+                    const li = document.createElement('li');
+                    li.className = 'file-item';
+                    
+                    const uploadTime = new Date(file.uploadTime).toLocaleString('zh-CN');
+                    const fileSize = formatFileSize(file.size);
+                    
+                    li.innerHTML = `
+                        <div class="file-info">
+                            <div class="file-name">${file.filename}</div>
+                            <div class="file-details">大小: ${fileSize} | 上传时间: ${uploadTime}</div>
+                        </div>
+                        <div class="file-actions">
+                            <a href="${serverUrl}${file.downloadUrl}" class="download-btn" download>下载</a>
+                            <button class="delete-btn" onclick="deleteFile('${file.filename}')">删除</button>
+                        </div>
+                    `;
+                    
+                    fileList.appendChild(li);
+                });
+            } catch (error) {
+                loading.style.display = 'none';
+                showStatus('加载文件列表失败', 'error');
+            }
+        }
+
+        // 删除文件
+        async function deleteFile(filename) {
+            if (!confirm(`确定要删除文件 "${filename}" 吗？`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${serverUrl}/files/${filename}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showStatus('文件删除成功', 'success');
+                    loadFileList(); // 重新加载文件列表
+                } else {
+                    showStatus(`删除失败：${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('删除失败：网络错误', 'error');
+            }
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFileList();
+        });
+    </script>
+</body>
+</html>

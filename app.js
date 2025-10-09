@@ -2,6 +2,8 @@ const express = require("express");
 const fs = require("fs");
 const app = express();
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const path = require('path');
 const { env } = require("process");
 const PORT = process.env.PORT || 3000;
 
@@ -30,6 +32,42 @@ db.query('SELECT NOW()', (err, res) => {
 
 
 app.use(bodyParser.text())
+
+// 静态文件服务
+app.use(express.static('.'));
+
+// 配置文件存储
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/') // 文件存储目录
+    },
+    filename: function (req, file, cb) {
+        // 使用时间戳和原文件名
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ 
+    storage: storage,
+    fileFilter: function (req, file, cb) {
+        // 只允许JSON文件
+        if (file.mimetype === 'application/json' || path.extname(file.originalname) === '.json') {
+            cb(null, true);
+        } else {
+            cb(new Error('只允许上传JSON文件'));
+        }
+    },
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 限制文件大小为10MB
+    }
+});
+
+// 确保uploads目录存在
+const uploadsDir = 'uploads';
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+}
 
 
 
@@ -178,6 +216,94 @@ app.post("/info", (req, res) => {
     ////console.log('New line added to file.');
     res.send("New employee added to the database");
     res.end();
+});
+
+// 文件上传端点
+app.post('/upload', upload.single('jsonFile'), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: '没有上传文件' });
+        }
+
+        // 验证JSON格式
+        const filePath = req.file.path;
+        const fileContent = fs.readFileSync(filePath, 'utf8');
+        
+        try {
+            JSON.parse(fileContent);
+        } catch (error) {
+            // 删除无效文件
+            fs.unlinkSync(filePath);
+            return res.status(400).json({ error: '文件格式错误，请确保是有效的JSON文件' });
+        }
+
+        res.json({
+            message: '文件上传成功',
+            filename: req.file.filename,
+            originalName: req.file.originalname,
+            size: req.file.size,
+            path: req.file.path
+        });
+    } catch (error) {
+        console.error('上传错误:', error);
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
+// 获取文件列表
+app.get('/files', (req, res) => {
+    try {
+        const files = fs.readdirSync(uploadsDir).map(filename => {
+            const filePath = path.join(uploadsDir, filename);
+            const stats = fs.statSync(filePath);
+            return {
+                filename: filename,
+                size: stats.size,
+                uploadTime: stats.mtime,
+                downloadUrl: `/download/${filename}`
+            };
+        });
+        
+        res.json(files);
+    } catch (error) {
+        console.error('获取文件列表错误:', error);
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
+// 文件下载端点
+app.get('/download/:filename', (req, res) => {
+    try {
+        const filename = req.params.filename;
+        const filePath = path.join(uploadsDir, filename);
+        
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ error: '文件不存在' });
+        }
+        
+        res.download(filePath, filename);
+    } catch (error) {
+        console.error('下载错误:', error);
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
+// 删除文件端点
+app.delete('/files/:filename', (req, res) => {
+    try {
+        const filename = req.params.filename;
+        const filePath = path.join(uploadsDir, filename);
+        
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ error: '文件不存在' });
+        }
+        
+        fs.unlinkSync(filePath);
+        res.json({ message: '文件删除成功' });
+    } catch (error) {
+        console.error('删除错误:', error);
+        res.status(500).json({ error: '服务器错误' });
+    }
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

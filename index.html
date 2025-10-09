@@ -287,6 +287,30 @@
                         <div class="endpoint-url">/inputdata</div>
                         <div class="endpoint-desc">导入IP地理位置数据</div>
                     </div>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-method">POST /upload</div>
+                        <div class="endpoint-url">/upload</div>
+                        <div class="endpoint-desc">上传JSON文件</div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-method">GET /files</div>
+                        <div class="endpoint-url">/files</div>
+                        <div class="endpoint-desc">获取文件列表</div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-method">GET /download/:filename</div>
+                        <div class="endpoint-url">/download/example.json</div>
+                        <div class="endpoint-desc">下载指定文件</div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-method">DELETE /files/:filename</div>
+                        <div class="endpoint-url">/files/example.json</div>
+                        <div class="endpoint-desc">删除指定文件</div>
+                    </div>
                 </div>
             </div>
 
@@ -296,6 +320,7 @@
                 <div class="demo-buttons">
                     <a href="FormtoServer.html" class="demo-btn">📝 员工信息录入</a>
                     <a href="MessagetoServer.html" class="demo-btn">💬 消息发送</a>
+                    <a href="FileUpload.html" class="demo-btn">📁 文件管理</a>
                 </div>
             </div>
 
