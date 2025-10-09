@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleServer - 用户数据管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.95;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .api-section {
+            background: #2c3e50;
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 40px 0;
+        }
+
+        .api-section h2 {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .api-endpoints {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .endpoint {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .endpoint-method {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .endpoint-url {
+            font-family: 'Courier New', monospace;
+            background: rgba(0,0,0,0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .endpoint-desc {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .demo-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .demo-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .demo-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .tech-stack {
+            background: #ecf0f1;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+        }
+
+        .tech-stack h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        .tech-items {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .tech-item {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: white;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+                margin: 20px 0;
+            }
+            
+            .demo-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tech-items {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 SimpleServer</h1>
+            <p class="subtitle">用户数据管理系统</p>
+            <p class="description">
+                基于Node.js和Express构建的现代化数据收集平台，集成IP地理位置查询功能，
+                为游戏和应用提供完整的用户行为分析解决方案。
+            </p>
+        </header>
+
+        <div class="main-content">
+            <div class="features">
+                <div class="feature-card">
+                    <h3>📊 用户数据管理</h3>
+                    <p>收集和管理用户设备信息、地理位置、游戏阶段等关键数据，支持分页查询和批量操作。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🌍 IP地理位置查询</h3>
+                    <p>集成IP2Location数据库，提供全球IP地址的地理位置查询服务，支持精确到国家级别。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>⚡ 高性能API</h3>
+                    <p>基于Express框架构建的RESTful API，支持高并发访问，提供稳定可靠的数据服务。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔒 安全可靠</h3>
+                    <p>采用PostgreSQL数据库，支持SSL连接，提供完整的数据安全和隐私保护。</p>
+                </div>
+            </div>
+
+            <div class="api-section">
+                <h2>🔗 API 端点</h2>
+                <div class="api-endpoints">
+                    <div class="endpoint">
+                        <div class="endpoint-method">GET /</div>
+                        <div class="endpoint-url">/</div>
+                        <div class="endpoint-desc">获取服务器状态信息</div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-method">GET /info/:id</div>
+                        <div class="endpoint-url">/info/0</div>
+                        <div class="endpoint-desc">分页获取用户数据（每页20条）</div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-method">POST /info</div>
+                        <div class="endpoint-url">/info</div>
+                        <div class="endpoint-desc">添加新的用户数据记录</div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-method">GET /deleteall</div>
+                        <div class="endpoint-url">/deleteall</div>
+                        <div class="endpoint-desc">清空所有用户数据</div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-method">GET /inputdata</div>
+                        <div class="endpoint-url">/inputdata</div>
+                        <div class="endpoint-desc">导入IP地理位置数据</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h2>🎮 在线演示</h2>
+                <p>体验我们的数据收集和管理功能</p>
+                <div class="demo-buttons">
+                    <a href="FormtoServer.html" class="demo-btn">📝 员工信息录入</a>
+                    <a href="MessagetoServer.html" class="demo-btn">💬 消息发送</a>
+                </div>
+            </div>
+
+            <div class="tech-stack">
+                <h2>🛠️ 技术栈</h2>
+                <div class="tech-items">
+                    <div class="tech-item">Node.js</div>
+                    <div class="tech-item">Express</div>
+                    <div class="tech-item">PostgreSQL</div>
+                    <div class="tech-item">HTML5</div>
+                    <div class="tech-item">CSS3</div>
+                    <div class="tech-item">JavaScript</div>
+                    <div class="tech-item">Cloudflare Pages</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 SimpleServer - 由 chunjunliang@qq.com 开发</p>
+            <p>🚀 部署在 Cloudflare Pages 上</p>
+        </footer>
+    </div>
+</body>
+</html>
