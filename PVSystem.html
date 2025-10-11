@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>集成式MEMS光传感器及光伏电站功率管理系统研究</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2c5aa0;
+            --secondary-color: #f8f9fa;
+            --accent-color: #28a745;
+            --text-dark: #333;
+            --text-light: #6c757d;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), #1e4080);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), #3a7bd5);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><polygon points="0,0 1000,100 1000,0"/></svg>');
+            background-size: cover;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--accent-color);
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), #3a7bd5);
+            color: white;
+            font-weight: bold;
+            border-bottom: none;
+        }
+        
+        .tech-comparison {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+        
+        .table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+        
+        .table thead th {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .performance-metric {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .performance-metric:hover {
+            transform: scale(1.05);
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        .metric-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .research-phase {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .sensor-diagram {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .footer {
+            background: var(--text-dark);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+        
+        .toc {
+            position: sticky;
+            top: 100px;
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .toc a {
+            color: var(--text-dark);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+        
+        .toc a:hover {
+            color: var(--primary-color);
+            padding-left: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #3a7bd5);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(44, 90, 160, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 60px 0;
+            }
+            
+            .hero-section h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .toc {
+                display: none;
+            }
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .efficiency-chart {
+            display: flex;
+            justify-content: space-around;
+            align-items: end;
+            height: 300px;
+            margin: 2rem 0;
+        }
+        
+        .chart-bar {
+            background: linear-gradient(to top, var(--primary-color), #3a7bd5);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-bar:hover {
+            transform: scaleY(1.05);
+        }
+        
+        .chart-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .chart-value {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="bi bi-sun"></i> 光伏传感器研究</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#background">研究背景</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#content">研究内容</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#manufacturing">制造工艺</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#application">应用研究</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#testing">测试方法</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主标题区域 -->
+    <section class="hero-section">
+        <div class="container hero-content">
+            <h1 class="display-4 fw-bold mb-4">集成式MEMS光传感器及光伏电站功率管理系统研究</h1>
+            <p class="lead mb-4">提升光伏电站发电效率的创新技术解决方案</p>
+            <a href="#background" class="btn btn-primary btn-lg">开始了解 <i class="bi bi-arrow-down"></i></a>
+        </div>
+    </section>
+
+    <!-- 主要内容区域 -->
+    <div class="container my-5">
+        <div class="row">
+            <!-- 侧边目录 -->
+            <div class="col-lg-3 col-md-4">
+                <div class="toc">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-list"></i> 目录导航</h5>
+                    <a href="#background">研究背景</a>
+                    <a href="#tracking-tech">光追踪技术</a>
+                    <a href="#mppt">最大功率点追踪</a>
+                    <a href="#pvar">光伏阵列动态连接</a>
+                    <a href="#manufacturing">制造工艺研究</a>
+                    <a href="#testing">测试方法研究</a>
+                    <a href="#application">应用研究</a>
+                    <a href="#results">研究成果</a>
+                </div>
+            </div>
+
+            <!-- 主内容 -->
+            <div class="col-lg-9 col-md-8">
+                <!-- 研究背景 -->
+                <section id="background" class="mb-5">
+                    <h2 class="section-title">研究背景</h2>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h4><i class="bi bi-lightbulb"></i> 提升光伏电站发电效率的技术方向</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>主要技术发展方向：</h5>
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>光电材料创新</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>热管理技术</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>最大功率点追踪(MPPT)</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>光追踪技术</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>光伏阵列动态连接(PVAR)</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>功率管理系统</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="highlight-box">
+                                        <h6><i class="bi bi-star"></i> 光传感器的关键作用</h6>
+                                        <p class="mb-0">光传感器在提升光伏效率方面发挥着核心作用，通过精确测量光入射角和光强分布，为追踪系统、MPPT和PVAR提供关键数据支持。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 光追踪技术 -->
+                <section id="tracking-tech" class="mb-5">
+                    <h3 class="section-title">光追踪技术研究现状</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="bi bi-gear"></i> 技术原理与缺陷</h5>
+                                </div>
+                                <div class="card-body">
+                                    <h6>技术原理：</h6>
+                                    <p>基于天文方程式，依据日期、时间、纬度和经度等参数预测太阳位置</p>
+                                    
+                                    <h6>当前缺陷：</h6>
+                                    <ul>
+                                        <li>需强大快速计算单元</li>
+                                        <li>每组支架的精确地理定位难实现</li>
+                                        <li>天气、温度、云层引起的大气折射率波动带来误差</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="bi bi-graph-up"></i> 追踪效益对比</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="tech-comparison">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>类型</th>
+                                                    <th>控制参数</th>
+                                                    <th>能量增益范围</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>单轴</td>
+                                                    <td>光传感器</td>
+                                                    <td>15.69% - 24.5%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>单轴</td>
+                                                    <td>天文数据</td>
+                                                    <td>5.7% - 24%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>双轴</td>
+                                                    <td>光传感器</td>
+                                                    <td>27% - 46.46%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>双轴</td>
+                                                    <td>天文数据</td>
+                                                    <td>7.08% - 40%</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h6><i class="bi bi-lightning"></i> 关键发现</h6>
+                        <p class="mb-0">含传感器的光伏追踪系统增益更高，比基于天文数据的追踪系统提升5%-10%。基于传感器的闭环控制追踪支架可提升发电量37%。</p>
+                    </div>
+                </section>
+
+                <!-- MPPT技术 -->
+                <section id="mppt" class="mb-5">
+                    <h3 class="section-title">最大功率点追踪（MPPT）</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>光强监测对MPPT效率的提升</h5>
+                                    <p>通过光强监测辅助，MPPT峰值输出效率可达到92.6%，相比无光强监测时的85%左右，效率提升约10%。</p>
+                                    
+                                    <h6>MPPT技术优势：</h6>
+                                    <ul>
+                                        <li>调整PWM控制器的占空比，动态保持输出功率最大化</li>
+                                        <li>区域光照信息辅助提升MPPT模块的调节速度</li>
+                                        <li>在多极值情况下帮助找到最大极值</li>
+                                        <li>解决局部遮阴问题，提高控制效率和速度</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="performance-metric">
+                                <div class="metric-value">92.6%</div>
+                                <div class="metric-label">有光强监测MPPT效率</div>
+                            </div>
+                            <div class="performance-metric">
+                                <div class="metric-value">85%</div>
+                                <div class="metric-label">无光强监测MPPT效率</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PVAR技术 -->
+                <section id="pvar" class="mb-5">
+                    <h3 class="section-title">光伏阵列动态连接（PVAR）</h3>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>技术原理</h5>
+                                    <p>PVAR通过动态调整光伏板间电路连接，改变电路拓扑结构，可提升光伏效率8.83%-39.10%。</p>
+                                    
+                                    <h6>关键技术特点：</h6>
+                                    <ul>
+                                        <li>需要光伏阵列各个位置的光强信息</li>
+                                        <li>实现动态组串连接优化</li>
+                                        <li>解决传统串并联结构局部阴影导致的失配损失</li>
+                                        <li>传统结构局部阴影导致失配损失可达30%以上</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="chart-container">
+                                        <h6>效率提升对比</h6>
+                                        <div class="efficiency-chart">
+                                            <div class="chart-bar" style="height: 60%;">
+                                                <div class="chart-value">8.83%</div>
+                                                <div class="chart-label">最小提升</div>
+                                            </div>
+                                            <div class="chart-bar" style="height: 85%;">
+                                                <div class="chart-value">20%</div>
+                                                <div class="chart-label">平均提升</div>
+                                            </div>
+                                            <div class="chart-bar" style="height: 100%;">
+                                                <div class="chart-value">39.10%</div>
+                                                <div class="chart-label">最大提升</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 传感器作用 -->
+                <section class="mb-5">
+                    <h3 class="section-title">传感器在PVAR、MPPT中的作用</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="bi bi-clipboard-data"></i> 性能对比</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>实验表明：光传感器的光强测量准确性高于基于光伏板电气参数的光强估算，提高11.3%。</p>
+                                    
+                                    <div class="sensor-diagram">
+                                        <h6>传感器系统原理</h6>
+                                        <div class="mb-3">
+                                            <i class="bi bi-sun" style="font-size: 3rem; color: #ffc107;"></i>
+                                        </div>
+                                        <p>光传感器 → 光强数据 → 微控制器 → 控制指令</p>
+                                        <p>↓</p>
+                                        <p>追踪支架 / PVAR / MPPT</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="bi bi-cpu"></i> 微控制器功能</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-arrow-right-circle text-primary me-2"></i>光传感器的信息读取/存储/传输</li>
+                                        <li><i class="bi bi-arrow-right-circle text-primary me-2"></i>利用光信息制定控制策略的算法</li>
+                                        <li><i class="bi bi-arrow-right-circle text-primary me-2"></i>发送控制指令给追踪支架/PVAR/MPPT</li>
+                                    </ul>
+                                    
+                                    <div class="highlight-box">
+                                        <h6>关键需求</h6>
+                                        <p class="mb-0">开发小体积、低功耗、低成本的光传感器，适合光伏阵列多节点布设，对PVAR、MPPT技术发展非常关键。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 制造工艺研究 -->
+                <section id="manufacturing" class="mb-5">
+                    <h2 class="section-title">传感器制造工艺与测试方法研究</h2>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="bi bi-lightbulb"></i> 模拟光源方案</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>LED阵列设计特点：</h6>
+                                    <ul>
+                                        <li>基于LED阵列的模拟自然光</li>
+                                        <li>集成度更高的PCB电路板实现</li>
+                                        <li>3D打印外壳，内衬柔性反光材料</li>
+                                        <li>2层均匀性好的石英匀光片</li>
+                                        <li>光源功率42W（105V, 0.4A）</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>光谱特性：</h6>
+                                    <p>模拟光源的光谱总体与自然光光谱相似度高，在远红外区域与自然光光谱差异较大，主要受LED最大工作电流限制。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 测试方法研究 -->
+                <section id="testing" class="mb-5">
+                    <h3 class="section-title">传感器测试与性能评估</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="bi bi-graph-up-arrow"></i> IV曲线测试结果</h5>
+                                </div>
+                                <div class="card-body">
+                                    <h6>PN结输出特性：</h6>
+                                    <ul>
+                                        <li>符合光电器件特征</li>
+                                        <li>短路电流和入射光能量成正比</li>
+                                        <li>采用短路电流作为主要测量对象</li>
+                                    </ul>
+                                    
+                                    <h6>入射角相关性：</h6>
+                                    <p>入射角与短路电流输出呈现很好的相关性，三个探测器面分别在120°、90°、65°处达到极值。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="bi bi-percent"></i> 精度测试结果</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="performance-metric">
+                                        <div class="metric-value">≤3.0%</div>
+                                        <div class="metric-label">平均相对误差</div>
+                                    </div>
+                                    
+                                    <h6>测试结论：</h6>
+                                    <ul>
+                                        <li>光强与短路电流输出呈现很好的线性关系</li>
+                                        <li>随着光强增加，相对误差逐渐减小</li>
+                                        <li>光强超过200 W/m²时，误差降至≤2.0%</li>
+                                        <li>对于1000 W/m²的标准太阳光强，精度满足光伏系统功率管理需求</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 性能对比 -->
+                <section class="mb-5">
+                    <h3 class="section-title">光传感器性能对比</h3>
+                    
+                    <div class="tech-comparison">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>传感器类型</th>
+                                    <th>优势</th>
+                                    <th>劣势</th>
+                                    <th>视野与精度</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>准直聚光传感器（片上）</td>
+                                    <td>体积小、功耗低、易集成、成本低</td>
+                                    <td>视野小、精度低</td>
+                                    <td>视角范围 ±40°<br>精度为 ±5.7°</td>
+                                </tr>
+                                <tr>
+                                    <td>光线指向传感器（片上）</td>
+                                    <td>体积小、功耗低、易集成、成本低</td>
+                                    <td>视野小、只能单轴测量</td>
+                                    <td>视角范围 ±45°<br>精度为 ±1.8°</td>
+                                </tr>
+                                <tr style="background-color: #e8f5e8;">
+                                    <td><strong>本课题角度组合传感器（片上）</strong></td>
+                                    <td><strong>视野大、体积小、功耗低、易集成、成本低</strong></td>
+                                    <td><strong>-</strong></td>
+                                    <td><strong>视角范围±75°<br>精度±3.4°</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 应用研究 -->
+                <section id="application" class="mb-5">
+                    <h2 class="section-title">光传感器（及微控制器）在光伏电站的应用研究</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="bi bi-motherboard"></i> 控制系统概述</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>本课题计划研发一个微控制器，其内置了光传感器数据收集、数据分析、控制算法、指令发送等程序。</p>
+                                    
+                                    <h6>系统组成：</h6>
+                                    <ul>
+                                        <li>传感器信号读取电路</li>
+                                        <li>光伏供电模块</li>
+                                        <li>控制模块</li>
+                                        <li>跨阻放大器（TIA）</li>
+                                        <li>多路复用器（Mux）</li>
+                                        <li>MCU数据处理</li>
+                                        <li>BLE无线发送</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5><i class="bi bi-wifi"></i> 通信与控制</h5>
+                                </div>
+                                <div class="card-body">
+                                    <h6>通信协议：</h6>
+                                    <p>通过光伏逆变器Modbus通讯协议，基于无线以太网Modbus-TCP，调取光伏逆变器中MPPT的工作参数、发送指令代码。</p>
+                                    
+                                    <h6>控制策略：</h6>
+                                    <p>制定PVAR组串连接策略，将指令下发给组串开关阵列，实现闭环控制。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 实地测试计划 -->
+                <section id="results" class="mb-5">
+                    <h3 class="section-title">应用方向与测试计划</h3>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="bi bi-clipboard-check"></i> 实地测试计划</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6>测试内容：</h6>
+                                    <ul>
+                                        <li>建设闭环控制光伏追踪支架</li>
+                                        <li>集成微控制器、PVAR、MPPT模块</li>
+                                        <li>实现光传感器应用下的光伏电站效率提升测试</li>
+                                        <li>开展不少于30天的实地测试</li>
+                                    </ul>
+                                    
+                                    <h6>测试目标：</h6>
+                                    <ul>
+                                        <li>测试各技术对光伏电站电量提升的作用</li>
+                                        <li>评估光传感器对各模块的贡献</li>
+                                        <li>优化系统参数和控制算法</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="highlight-box">
+                                        <h6><i class="bi bi-geo-alt"></i> 测试地点</h6>
+                                        <p class="mb-0">计划依托华清八度光电集团有限公司在四川南充建设的光伏电站开展实地测试。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 研究成果总结 -->
+                <section class="mb-5">
+                    <h3 class="section-title">研究成果总结</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="performance-metric">
+                                <div class="metric-value">46.46%</div>
+                                <div class="metric-label">双轴传感器追踪最大增益</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="performance-metric">
+                                <div class="metric-value">92.6%</div>
+                                <div class="metric-label">MPPT峰值输出效率</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="performance-metric">
+                                <div class="metric-value">±3.4°</div>
+                                <div class="metric-label">角度传感器精度</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="research-phase">
+                        <h5><i class="bi bi-trophy"></i> 主要创新点</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>开发了大视野角度组合传感器（±75°）</li>
+                                    <li>实现了高精度光强测量（误差≤2.0%）</li>
+                                    <li>设计了低功耗、小体积的集成传感器系统</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>建立了完整的光伏电站功率管理解决方案</li>
+                                    <li>实现了传感器数据与控制系统的高效集成</li>
+                                    <li>为光伏电站效率提升提供了技术支撑</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-sun"></i> 光伏传感器研究</h5>
+                    <p>致力于提升光伏电站发电效率的技术创新</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2025 集成式MEMS光传感器研究项目</p>
+                    <p>技术支持：华清八度光电集团有限公司</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'linear-gradient(135deg, #1e4080, #2c5aa0)';
+            } else {
+                navbar.style.background = 'linear-gradient(135deg, #2c5aa0, #1e4080)';
+            }
+        });
+
+        // 动画效果
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // 观察所有卡片和性能指标
+        document.querySelectorAll('.card, .performance-metric, .research-phase').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // 图表动画
+        function animateCharts() {
+            const chartBars = document.querySelectorAll('.chart-bar');
+            chartBars.forEach((bar, index) => {
+                setTimeout(() => {
+                    bar.style.transition = 'height 1s ease';
+                    const finalHeight = bar.style.height;
+                    bar.style.height = '0%';
+                    setTimeout(() => {
+                        bar.style.height = finalHeight;
+                    }, 100);
+                }, index * 200);
+            });
+        }
+
+        // 当图表容器进入视口时触发动画
+        const chartObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCharts();
+                    chartObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const chartContainer = document.querySelector('.efficiency-chart');
+        if (chartContainer) {
+            chartObserver.observe(chartContainer);
+        }
+    </script>
+</body>
+</html>
